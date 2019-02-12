@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     # http://whitenoise.evans.io/en/stable/django.html#using-whitenoise-in-development
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
+    'import_export',
+	'ESPWeigh'
 ]
 
 MIDDLEWARE = [
@@ -78,11 +80,11 @@ WSGI_APPLICATION = 'ESPWeigh.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
+DEBUG = os.environ.get('DEBUG', default=False)
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL')
+    )
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -129,9 +131,20 @@ STATICFILES_DIRS = [
     os.path.join(PROJECT_ROOT, 'static'),
 ]
 
+
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+#Save Media Files on S3
+#DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+#AWS_ACCESS_KEY_ID=os.environ.get("AWS_ACCESS_KEY_ID")
+#AWS_SECRET_ACCESS_KEY=os.environ.get("AWS_SECRET_ACCESS_KEY")
+#AWS_STORAGE_BUCKET_NAME=os.environ.get("AWS_STORAGE_BUCKET_NAME")
+#AWS_DEFAULT_ACL=os.environ.get("AWS_DEFAULT_ACL")
+#AWS_AUTO_CREATE_BUCKET =True
+#AWS_S3_REGION_NAME =os.environ.get("AWS_S3_REGION_NAME")
+
+IMPORT_EXPORT_USE_TRANSACTIONS = True
 # Activate Django-Heroku.
 django_heroku.settings(locals())
